@@ -25,10 +25,11 @@ public class ServletAnts extends HttpServlet {
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         //System.out.println(reqBody);
         resp.setContentType("text/html");
-        resp.getWriter().write("Thank you client!");
+        resp.getWriter().write("Received data!");
 
         Gson gson = new Gson();
         SubmitData submitData = gson.fromJson(reqBody, SubmitData.class);
-        System.out.println("Ant data: " + submitData.antDataReturn());
+        System.out.println("Ant data:");
+        System.out.println(submitData.antDataReturn());
     }
 }
