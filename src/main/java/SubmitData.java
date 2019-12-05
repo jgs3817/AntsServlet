@@ -6,15 +6,15 @@ public class SubmitData implements Serializable {
     private String videoID;
     private int frameID;
 
-    public ArrayList<ArrayList<Integer>> antDataReturn() {
+    public ArrayList<ArrayList<Integer>> getAntData() {
         return antData;
     }
 
-    public String videoIDReturn(){
+    public String getVideoID(){
         return videoID;
     }
 
-    public int frameIDReturn(){
+    public int getFrameID(){
         return frameID;
     }
 }

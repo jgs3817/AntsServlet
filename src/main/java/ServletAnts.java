@@ -30,6 +30,6 @@ public class ServletAnts extends HttpServlet {
         Gson gson = new Gson();
         SubmitData submitData = gson.fromJson(reqBody, SubmitData.class);
         System.out.println("Ant data:");
-        System.out.println(submitData.antDataReturn());
+        System.out.println(submitData.getAntData());
     }
 }
