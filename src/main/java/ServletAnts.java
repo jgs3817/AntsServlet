@@ -38,7 +38,7 @@ public class ServletAnts extends HttpServlet {
         System.out.println(submitData.getAntData());
     }*/
 
-    // Method for /FBdata URL pattern
+    /*// Method for /FBdata URL pattern
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
@@ -50,7 +50,11 @@ public class ServletAnts extends HttpServlet {
 
         resp.setContentType("application/json");
         resp.getWriter().write(jsonString);
+    }*/
+
+    // Method for /landingpage URL pattern
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+        //get frame, get image, get progress, get coordinates
     }
-
-
 }
