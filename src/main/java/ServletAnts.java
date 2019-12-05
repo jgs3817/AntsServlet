@@ -23,18 +23,26 @@ public class ServletAnts extends HttpServlet {
         System.out.println(req.getServletPath());
     }
 
+    /*
+    // Method for /submit URL pattern
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         //System.out.println(reqBody);
-        //resp.setContentType("text/html");
-        //resp.getWriter().write("Received data!");
-        System.out.println(reqBody);
+        resp.setContentType("text/html");
+        resp.getWriter().write("Received data!");
 
         Gson gson = new Gson();
         SubmitData submitData = gson.fromJson(reqBody, SubmitData.class);
         System.out.println("Ant data:");
         System.out.println(submitData.getAntData());
+    }*/
+
+    // Method for /FBdata URL pattern
+    @Override
+    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+        String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        System.out.println(reqBody);
 
         DataSend dataSend = new DataSend();
         Gson outputGson = new Gson();
@@ -42,7 +50,6 @@ public class ServletAnts extends HttpServlet {
 
         resp.setContentType("application/json");
         resp.getWriter().write(jsonString);
-
     }
 
 
