@@ -6,6 +6,9 @@ import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.io.OutputStreamWriter;
+import java.nio.charset.StandardCharsets;
 import java.util.stream.Collectors;
 
 @WebServlet(urlPatterns={"/mainpage"},loadOnStartup = 1)
@@ -24,12 +27,23 @@ public class ServletAnts extends HttpServlet {
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
         //System.out.println(reqBody);
-        resp.setContentType("text/html");
-        resp.getWriter().write("Received data!");
+        //resp.setContentType("text/html");
+        //resp.getWriter().write("Received data!");
+        System.out.println(reqBody);
 
         Gson gson = new Gson();
         SubmitData submitData = gson.fromJson(reqBody, SubmitData.class);
         System.out.println("Ant data:");
         System.out.println(submitData.getAntData());
+
+        DataSend dataSend = new DataSend();
+        Gson outputGson = new Gson();
+        String jsonString = outputGson.toJson(dataSend);
+
+        resp.setContentType("application/json");
+        resp.getWriter().write(jsonString);
+
     }
+
+
 }
