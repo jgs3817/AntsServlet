@@ -21,7 +21,7 @@ import java.util.stream.Collectors;
 
 import static java.lang.String.format;
 
-@WebServlet(urlPatterns={"/submit_page", "/landingpage", "/FBpage", "/init"},loadOnStartup = 1)
+@WebServlet(urlPatterns={"/submitpage", "/landingpage", "/FBpage", "/init"},loadOnStartup = 1)
 public class ServletAnts extends HttpServlet {
 
 
@@ -29,55 +29,21 @@ public class ServletAnts extends HttpServlet {
     private String videoID;
     private int frameID;
 
-    public ServletAnts(){}
+    //public ServletAnts(){}
 
-//    static void postLandingData(){
-//        SubmitData submitData = new SubmitData();
-//        Gson gson = new Gson();
-//        String jsonString = gson.toJson(submitData);
-//        byte[] body = jsonString.getBytes(StandardCharsets.UTF_8);
-//
-//        HttpURLConnection conn = null;
-//
-//        try{
-//            URL myURL = new URL("http://localhost:8080/AntsServlet/landing_page");
-//            conn = null;
-//            conn = (HttpURLConnection) myURL.openConnection();
-//            conn.setRequestMethod("POST");
-//            conn.setRequestProperty("Accept", "text/html");
-//            conn.setRequestProperty("charset", "utf-8");
-//            conn.setDoOutput(true);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try (OutputStream outputStream = conn.getOutputStream()) {
-//            outputStream.write(body,0,body.length);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        try {
-//            BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(conn.getInputStream(), "utf-8"));
-//            String inputLine;
-//            while ((inputLine = bufferedReader.readLine()) != null) {
-//                System.out.println(inputLine);
-//            }
-//            bufferedReader.close();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//    }
+    @Override
+    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
+        resp.setContentType("text/html");
+        resp.getWriter().write("This is submit page");
+    }
 
     @Override
     protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
 
         String path = req.getServletPath();
 
-
         switch(path){
-            case "/submit_page":{
+            case "/submitpage":{
 
                 // Receive SubmitData
                 String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
@@ -287,7 +253,7 @@ public class ServletAnts extends HttpServlet {
 
                 String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
 
-                ArrayList<InitData> initDataArrayList = new ArrayList<InitData>();
+                InitDataArrayList initDataArrayList = new InitDataArrayList();
 
                 for(int i=1; i<5; i++){
                     InitData initData = new InitData();
@@ -349,32 +315,31 @@ public class ServletAnts extends HttpServlet {
                     initData.setImageByte(image_byte);
 
 
-                    initDataArrayList.add(initData);
+                    // Convert the initData  object into jsob string
+                    Gson respGson = new Gson();
+                    String jsonString = respGson.toJson(initData);
+
+                    initDataArrayList.addInitData(jsonString);
 
                     System.out.println("test1");
 
                 }
 
-
-                for(InitData i : initDataArrayList){
-                    i.printInitData();
-                }
-
-
-                // Send ArrayList of InitData object over
+                // Send ArrayList of jsonString over
                 Gson respGson = new Gson();
-                String jsonString = respGson.toJson(initDataArrayList);
+                String jsonArrayListString = respGson.toJson(initDataArrayList);
                 //byte[] body = jsonString.getBytes(StandardCharsets.UTF_8);
-                System.out.println(jsonString);
+                System.out.println(jsonArrayListString);
 
-                resp.setContentType("application/json");
-                resp.getWriter().write(jsonString);
+                resp.setContentType("text/html");
+                resp.getWriter().write(jsonArrayListString);
 
 
 
 
 
             }
+            break;
 
 
         }
