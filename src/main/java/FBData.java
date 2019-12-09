@@ -7,12 +7,15 @@ public class FBData implements Serializable {
     private String videoID;
     private int frameID = 2;
     private byte [] imageByte;
-
-
+    private boolean fb;
 
     public ArrayList<ArrayList<Integer>> getAntData() {
         return antData;
     }
+
+    public boolean getFB(){return fb;}
+
+    public void setFB(boolean input){this.fb = input;}
 
     public String getVideoID(){return this.videoID;}
 

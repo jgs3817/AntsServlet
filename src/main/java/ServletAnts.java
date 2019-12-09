@@ -136,8 +136,15 @@ public class ServletAnts extends HttpServlet {
                 System.out.println("frameID");
                 System.out.println(fbData.getFrameID());
 
+                // Selecting if its next or previous frame
+                int chosenFrame;
+                if(fbData.getFB()){
+                    chosenFrame = fbData.getFrameID() + 1;
+                } else {chosenFrame = fbData.getFrameID() - 1;
+                }
+
                 // Fetch data from resources
-                String file_name= String.format("%05d",fbData.getFrameID());
+                String file_name= String.format("%05d",chosenFrame);
                 String filePath ="./vid_1/" + file_name + ".png";
                 BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource(filePath));
 
