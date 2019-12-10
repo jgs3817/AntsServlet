@@ -1,5 +1,4 @@
 import com.google.gson.Gson;
-import com.google.gson.JsonArray;
 
 import javax.imageio.ImageIO;
 import javax.servlet.ServletException;
@@ -7,16 +6,11 @@ import javax.servlet.annotation.WebServlet;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
-import javax.swing.*;
 import java.awt.image.BufferedImage;
-import java.awt.image.RenderedImage;
 import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
 import java.util.ArrayList;
-import java.util.Objects;
 import java.util.stream.Collectors;
 
 import static java.lang.String.format;
@@ -44,7 +38,6 @@ public class ServletAnts extends HttpServlet {
 
         switch(path){
             case "/submitpage":{
-
                 // Receive SubmitData
                 String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
                 //System.out.println(reqBody);
@@ -62,7 +55,6 @@ public class ServletAnts extends HttpServlet {
 
                 //Insert into DB
                 String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
-
 
                 try {
                     Connection conn= DriverManager.getConnection(dbUrl, "postgres", "winn");
@@ -104,8 +96,6 @@ public class ServletAnts extends HttpServlet {
                                 "INSERT INTO coordinates (ant_id, frame_id, x_coord, y_coord, video_id) values (" + antData.get(i).get(0) + "," + frameID + ", " + antData.get(i).get(1) + ", " + antData.get(i).get(2) + ", '" + videoID + "');";
 
                         s.execute(submitQuery);
-
-
                     }
                     conn.close();
                 }
@@ -120,27 +110,80 @@ public class ServletAnts extends HttpServlet {
                         count++;
                     }
                 }
-
-
-
             }
             break;
 
             case "/FBpage":{
-
                 // Receive FBData Request
                 String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-                System.out.println(reqBody);
+                //System.out.println(reqBody);
 
                 Gson gson = new Gson();
                 FBData fbData = gson.fromJson(reqBody, FBData.class);
+                //System.out.println("FB state");
+                //System.out.println(fbData.getFB());
                 //System.out.println("frameID");
                 //System.out.println(fbData.getFrameID());
-                //System.out.println(fbData.getFB());
+                //System.out.println("VideoID");
+                //System.out.println(fbData.getVideoID());
 
+                if(fbData.getFB()){
+                    if(fbData.getFrameID()>1 && fbData.getFrameID()<20){      //next frame
+                        String fileName = String.format("%05d", fbData.getFrameID());
+                        String filePath ="./vid_1/" + fileName + ".png";
+                        System.out.println("Overlay: " + filePath);
+                        BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource(filePath));
+
+                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        ImageIO.write(image, "png", bos);
+                        byte [] imageByte = bos.toByteArray();
+                        fbData.setImageByte(imageByte);
+
+                        fbData.setFrameID(fbData.getFrameID()+1);   //current frame
+
+                        fileName = String.format("%05d", fbData.getFrameID());
+                        filePath ="./vid_1/" + fileName + ".png";
+                        System.out.println("Current: " + filePath);
+                        image = ImageIO.read(getClass().getClassLoader().getResource(filePath));
+
+                        bos = new ByteArrayOutputStream();
+                        ImageIO.write(image, "png", bos);
+                        imageByte = bos.toByteArray();
+                        fbData.setFBImageByte(imageByte);
+                    }
+                }
+                else if(!fbData.getFB()){       //previous frame
+                    if(fbData.getFrameID()>1 && fbData.getFrameID()<20){
+                        fbData.setFrameID(fbData.getFrameID());   //overlay frame
+
+                        String fileName = String.format("%05d", fbData.getFrameID());
+                        String filePath ="./vid_1/" + fileName + ".png";
+                        System.out.println("Overlay: " + filePath);
+                        BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource(filePath));
+
+                        ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                        ImageIO.write(image, "png", bos);
+                        byte [] imageByte = bos.toByteArray();
+                        fbData.setImageByte(imageByte);
+
+                        fbData.setFrameID(fbData.getFrameID()+1);   //current frame
+
+                        fileName = String.format("%05d", fbData.getFrameID());
+                        filePath ="./vid_1/" + fileName + ".png";
+                        System.out.println("Current: " + filePath);
+                        image = ImageIO.read(getClass().getClassLoader().getResource(filePath));
+
+                        bos = new ByteArrayOutputStream();
+                        ImageIO.write(image, "png", bos);
+                        imageByte = bos.toByteArray();
+                        fbData.setFBImageByte(imageByte);
+                    }
+                }
+
+                /*
                 // Fetch data from resources
-                String file_name = String.format("%05d", fbData.getFrameID());
-                String filePath ="./vid_1/" + file_name + ".png";
+                String fileName = String.format("%05d", fbData.getFrameID());
+                String filePath ="./vid_1/" + fileName + ".png";
                 BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource(filePath));
 
                 // Convert Image into byte and store it in class FBData
@@ -148,6 +191,11 @@ public class ServletAnts extends HttpServlet {
                 ImageIO.write(image, "png", bos);
                 byte [] image_byte = bos.toByteArray();
                 fbData.setImageByte(image_byte);
+
+                if(fbData.getFrameID()>1){
+                    fbData.setFrameID(fbData.getFrameID()-1);
+
+                }*/
 
                 // Send FBData object over
                 Gson respGson = new Gson();
@@ -160,20 +208,16 @@ public class ServletAnts extends HttpServlet {
             break;
 
             case "/landingpage":{
-
                 //Receive vid_id
                 String reqVidID = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
                 System.out.println(reqVidID);
 
                 LandingData landingData = new LandingData();
-
                 landingData.setVideoID(reqVidID);
-
                 //Query from DB
 
                 String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
                 try {
-
                     Connection conn= DriverManager.getConnection(dbUrl, "postgres", "winn");
                     Statement s=conn.createStatement();
 
@@ -190,7 +234,6 @@ public class ServletAnts extends HttpServlet {
 
                     ArrayList<ArrayList<Integer>> antData = new ArrayList<ArrayList<Integer>>();
 
-
                     while(rset.next()){
                         //System.out.println(rset.getInt("ant_id")+" "+ rset.getInt("x_coord") + " " + rset.getInt("y_coord"));
                         ArrayList<Integer> oneAntData = new ArrayList<Integer>();
@@ -201,8 +244,6 @@ public class ServletAnts extends HttpServlet {
                         antData.add(oneAntData);
                     }
                     landingData.setAntData(antData);
-
-
 
                     rset.close();
                     s.close();
@@ -242,7 +283,24 @@ public class ServletAnts extends HttpServlet {
             break;
 
             case "/init":{
+                InitData sendData = new InitData();
+                //String fileName = String.format("%05d", InitData.getFrameID());
+                String filePath ="./vid_1/00001.png";
+                //System.out.println("Init: " + filePath);
+                BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource(filePath));
 
+                ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                ImageIO.write(image, "png", bos);
+                byte [] imageByte = bos.toByteArray();
+                sendData.setImageByte(imageByte);
+
+                Gson respGson = new Gson();
+                String jsonString = respGson.toJson(sendData);
+                //byte[] body = jsonString.getBytes(StandardCharsets.UTF_8);
+
+                resp.setContentType("application/json");
+                resp.getWriter().write(jsonString);
+                /*
                 ArrayList<Integer> vidSize = new ArrayList<Integer>();
                 vidSize.add(0);
                 vidSize.add(9);
@@ -335,7 +393,8 @@ public class ServletAnts extends HttpServlet {
                 System.out.println(jsonArrayListString);
 
                 resp.setContentType("text/html");
-                resp.getWriter().write(jsonArrayListString);
+                resp.getWriter().write(jsonArrayListString);*/
+
             }
             break;
         }

@@ -5,8 +5,9 @@ public class FBData implements Serializable {
 
     private ArrayList<ArrayList<Integer>> antData;
     private String videoID;
-    private int frameID = 2;
-    private byte [] imageByte;
+    private int frameID;
+    private byte[] imageByte;
+    private byte[] FBImageByte;
     private boolean fb;
 
 
@@ -18,7 +19,11 @@ public class FBData implements Serializable {
 
     public int getFrameID(){return this.frameID;}
 
-    public byte [] getImageByte(){return this.imageByte;}
+    public byte[] getImageByte(){return this.imageByte;}
+
+    public byte[] getFBImageByte(){
+        return this.FBImageByte;
+    }
 
     public boolean getFB(){
         return fb;
@@ -32,7 +37,9 @@ public class FBData implements Serializable {
         this.frameID = frameID;
     }
 
-    public void setImageByte(byte [] imageByteInput){imageByte = imageByteInput;}
+    public void setImageByte(byte[] imageByteInput){imageByte = imageByteInput;}
 
-
+    public void setFBImageByte(byte[] imageByteInput){
+        FBImageByte = imageByteInput;
+    }
 }
