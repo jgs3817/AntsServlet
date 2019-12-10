@@ -1,0 +1,20 @@
+language: java
+before_install:
+  - chmod +x gradlew
+script:
+  - ./gradlew build --info
+before_cache:
+  - rm -f $HOME/.gradle/caches/modules-2/modules-2.lock
+  - rm -fr $HOME/.gradle/caches/*/plugin-resolution/
+cache:
+  directories:
+    - $HOME/.gradle/caches/
+    - $HOME/.gradle/wrapper/
+deploy:
+  provider: heroku
+  api_key:
+    secure: 3dece2ce-6112-432c-a556-376d15f88bff
+  app: ants-tracker
+  on:
+    branch: Josh
+  skip_cleanup: true

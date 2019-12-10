@@ -10,11 +10,7 @@ public class SubmitData implements Serializable {
         return antData;
     }
 
-    public String getVideoID(){
-        return videoID;
-    }
+    public String getVideoID(){return this.videoID;}
 
-    public int getFrameID(){
-        return frameID;
-    }
+    public int getFrameID(){return this.frameID;}
 }
