@@ -126,12 +126,14 @@ public class ServletAnts extends HttpServlet {
                 //System.out.println(fbData.getFrameID());
                 //System.out.println("VideoID");
                 //System.out.println(fbData.getVideoID());
-
+                String video = fbData.getVideoID();
+                //System.out.println(video);
                 if(fbData.getFB()){
                     if(fbData.getFrameID()>1 && fbData.getFrameID()<20){      //next frame
                         String fileName = String.format("%05d", fbData.getFrameID());
                         String filePath ="./vid_1/" + fileName + ".png";
-                        System.out.println("Overlay: " + filePath);
+                        //String filePath = video + fileName + ".png";
+                        //System.out.println("Overlay: " + filePath);
                         BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource(filePath));
 
                         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -143,7 +145,8 @@ public class ServletAnts extends HttpServlet {
 
                         fileName = String.format("%05d", fbData.getFrameID());
                         filePath ="./vid_1/" + fileName + ".png";
-                        System.out.println("Current: " + filePath);
+                        //String filePath = video + fileName + ".png";
+                        //System.out.println("Current: " + filePath);
                         image = ImageIO.read(getClass().getClassLoader().getResource(filePath));
 
                         bos = new ByteArrayOutputStream();
@@ -158,7 +161,8 @@ public class ServletAnts extends HttpServlet {
 
                         String fileName = String.format("%05d", fbData.getFrameID());
                         String filePath ="./vid_1/" + fileName + ".png";
-                        System.out.println("Overlay: " + filePath);
+                        //String filePath = video + fileName + ".png";
+                        //System.out.println("Overlay: " + filePath);
                         BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource(filePath));
 
                         ByteArrayOutputStream bos = new ByteArrayOutputStream();
@@ -170,7 +174,8 @@ public class ServletAnts extends HttpServlet {
 
                         fileName = String.format("%05d", fbData.getFrameID());
                         filePath ="./vid_1/" + fileName + ".png";
-                        System.out.println("Current: " + filePath);
+                        //String filePath = video + fileName + ".png";
+                        //System.out.println("Current: " + filePath);
                         image = ImageIO.read(getClass().getClassLoader().getResource(filePath));
 
                         bos = new ByteArrayOutputStream();
@@ -262,17 +267,28 @@ public class ServletAnts extends HttpServlet {
                 }
 
                 // Fetch data from resources
-                String file_name= String.format("%05d",landingData.getFrameID());
-                String filePath ="./"+ landingData.getVideoID() +"/" + file_name + ".png";
+                String file_name = String.format("%05d",landingData.getFrameID());
+                String filePath = "./"+ landingData.getVideoID() +"/" + file_name + ".png";
                 BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource(filePath));
 
                 // Convert Image into byte and store it in class LandingData
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 ImageIO.write(image, "png", bos);
-                byte [] image_byte = bos.toByteArray();
-                landingData.setImageByte(image_byte);
+                byte [] imageByte = bos.toByteArray();
+                landingData.setImageByte(imageByte);
+
+                if(landingData.getFrameID()>1) {
+                    file_name = String.format("%05d", landingData.getFrameID() - 1);
+                    filePath = "./"+ landingData.getVideoID() +"/" + file_name + ".png";
+                    image = ImageIO.read(getClass().getClassLoader().getResource(filePath));
+                    bos = new ByteArrayOutputStream();
+                    ImageIO.write(image, "png", bos);
+                    imageByte = bos.toByteArray();
+                    landingData.setOverlayImageByte(imageByte);
+                }
 
                 // Send LandingData object over
+                //videoID, frameID, image
                 Gson respGson = new Gson();
                 String jsonString = respGson.toJson(landingData);
                 byte[] body = jsonString.getBytes(StandardCharsets.UTF_8);
