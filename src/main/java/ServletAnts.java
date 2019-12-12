@@ -192,7 +192,7 @@ public class ServletAnts extends HttpServlet {
                 // Fetch chosen frame from resources
                 if(chosenFrame > 0) {
                     String file_name = String.format("%05d", chosenFrame);
-                    String filePath = "./vid_1/" + file_name + ".png";
+                    String filePath = "./"+ fbData.getVideoID() +"/" + file_name + ".png";
                     BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource(filePath));
 
                     // Convert Image into byte and store it in class FBData
@@ -410,10 +410,10 @@ public class ServletAnts extends HttpServlet {
                         initData.setProgress(vidSize.get(i));
 
 
-                        //String filePath = "./" + initData.getVideoID();
-                        //File file = new File(String.valueOf(getClass().getClassLoader().getResource("filePath")));
-                        //int progressDeno = file.listFiles().length;
-                        //initData.setProgress(progressDeno);
+//                        String filePath = "./" + initData.getVideoID();
+//                        File file = new File("filePath");
+//                        int progressDeno = file.listFiles().length;
+//                        initData.setProgress(progressDeno);
 
                         rset.close();
                         s.close();
