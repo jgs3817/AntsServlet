@@ -143,6 +143,48 @@ public class ServletAnts extends HttpServlet {
                 } else {chosenFrame = fbData.getFrameID() - 1;
                 }
 
+                //Query Ant Data from DB
+                String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
+                try {
+
+                    Connection conn= DriverManager.getConnection(dbUrl, "postgres", "winn");
+                    Statement s=conn.createStatement();
+
+                    String mostRecentLabelledData = "SELECT ant_id, x_coord, y_coord\n" +
+                            "FROM coordinates\n" +
+                            "WHERE video_id = '"+ fbData.getVideoID() +"' AND frame_id = " + (chosenFrame);
+
+                    ResultSet rset=s.executeQuery(mostRecentLabelledData);
+
+                    ArrayList<ArrayList<Integer>> antData = new ArrayList<ArrayList<Integer>>();
+
+
+                    while(rset.next()){
+                        //System.out.println(rset.getInt("ant_id")+" "+ rset.getInt("x_coord") + " " + rset.getInt("y_coord"));
+                        ArrayList<Integer> oneAntData = new ArrayList<Integer>();
+                        oneAntData.add(rset.getInt("ant_id"));
+                        oneAntData.add(rset.getInt("x_coord"));
+                        oneAntData.add(rset.getInt("y_coord"));
+                        antData.add(oneAntData);
+                    }
+                    fbData.setAntData(antData);
+
+                    rset.close();
+                    s.close();
+                    conn.close();
+                }
+                catch (SQLException except) {
+                    int count = 1;
+                    while (except != null) {
+                        System.out.println("SQLException " + count);
+                        System.out.println("Code: " + except.getErrorCode());
+                        System.out.println("SqlState: " + except.getSQLState());
+                        System.out.println("Error Message: " + except.getMessage());
+                        except = except.getNextException();
+                        count++;
+                    }
+                }
+
                 // Fetch data from resources
                 String file_name= String.format("%05d",chosenFrame);
                 String filePath ="./vid_1/" + file_name + ".png";
@@ -151,8 +193,8 @@ public class ServletAnts extends HttpServlet {
                 // Convert Image into byte and store it in class FBData
                 ByteArrayOutputStream bos = new ByteArrayOutputStream();
                 ImageIO.write(image, "png", bos);
-                byte [] image_byte = bos.toByteArray();
-                fbData.setImageByte(image_byte);
+                byte [] imageByte = bos.toByteArray();
+                fbData.setImageByte(imageByte);
 
                 // Send FBData object over
                 Gson respGson = new Gson();
@@ -165,6 +207,8 @@ public class ServletAnts extends HttpServlet {
             }
             break;
             case "/landingpage":{
+
+                System.out.println("landing page doPost");
 
                 //Receive vid_id
                 String reqVidID = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
@@ -225,7 +269,9 @@ public class ServletAnts extends HttpServlet {
                     }
                 }
 
-                // Fetch data from resources
+                System.out.println("test1");
+
+                // Fetch current frame image from resources
                 String file_name= String.format("%05d",landingData.getFrameID());
                 String filePath ="./"+ landingData.getVideoID() +"/" + file_name + ".png";
                 BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource(filePath));
@@ -235,6 +281,64 @@ public class ServletAnts extends HttpServlet {
                 ImageIO.write(image, "png", bos);
                 byte [] image_byte = bos.toByteArray();
                 landingData.setImageByte(image_byte);
+
+                // Fetch overlay image frame from resources
+                if(landingData.getFrameID() > 1) {
+                    file_name = String.format("%05d", (landingData.getFrameID()-1));
+                    System.out.println(file_name);
+                    filePath = "./" + landingData.getVideoID() + "/" + file_name + ".png";
+                    image = ImageIO.read(getClass().getClassLoader().getResource(filePath));
+
+                    // Convert Image into byte and store it in class LandingData
+                    bos = new ByteArrayOutputStream();
+                    ImageIO.write(image, "png", bos);
+                    byte[] overlayImageByte = bos.toByteArray();
+                    landingData.setOverlayImageByte(overlayImageByte);
+                }
+
+                System.out.println("OverlayFrameID");
+                System.out.println((landingData.getFrameID()-1));
+
+                //Query Overlay Ant Data from DB
+                try {
+
+                    Connection conn= DriverManager.getConnection(dbUrl, "postgres", "winn");
+                    Statement s=conn.createStatement();
+
+                    String mostRecentLabelledData = "SELECT ant_id, x_coord, y_coord\n" +
+                            "FROM coordinates\n" +
+                            "WHERE video_id = '"+ reqVidID +"' AND frame_id = " + (landingData.getFrameID()-1);
+
+                    ResultSet rset=s.executeQuery(mostRecentLabelledData);
+
+                    ArrayList<ArrayList<Integer>> overlayAntData = new ArrayList<ArrayList<Integer>>();
+
+
+                    while(rset.next()){
+                        //System.out.println(rset.getInt("ant_id")+" "+ rset.getInt("x_coord") + " " + rset.getInt("y_coord"));
+                        ArrayList<Integer> oneAntData = new ArrayList<Integer>();
+                        oneAntData.add(rset.getInt("ant_id"));
+                        oneAntData.add(rset.getInt("x_coord"));
+                        oneAntData.add(rset.getInt("y_coord"));
+                        overlayAntData.add(oneAntData);
+                    }
+                    landingData.setOverlayAntData(overlayAntData);
+
+                    rset.close();
+                    s.close();
+                    conn.close();
+                }
+                catch (SQLException except) {
+                    int count = 1;
+                    while (except != null) {
+                        System.out.println("SQLException " + count);
+                        System.out.println("Code: " + except.getErrorCode());
+                        System.out.println("SqlState: " + except.getSQLState());
+                        System.out.println("Error Message: " + except.getMessage());
+                        except = except.getNextException();
+                        count++;
+                    }
+                }
 
                 // Send LandingData object over
                 Gson respGson = new Gson();

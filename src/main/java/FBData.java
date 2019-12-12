@@ -1,5 +1,6 @@
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.stream.Collectors;
 
 public class FBData implements Serializable {
 
@@ -12,6 +13,20 @@ public class FBData implements Serializable {
     public ArrayList<ArrayList<Integer>> getAntData() {
         return antData;
     }
+
+    public void setAntData(ArrayList<ArrayList<Integer>> antDataInput){
+        this.antData = new ArrayList<>(antDataInput.stream().map(x -> new ArrayList<>(x)).collect(Collectors.toList()));
+
+//        for (int i = 0; i < antDataInput.size(); i++) {
+//            ArrayList<Integer> individualAnt = new ArrayList<Integer>();
+//            for (int j = 0; j < antDataInput.get(i).size(); j++) {
+//                individualAnt.add(antDataInput.get(i).get(j));
+//            }
+//            this.antData.add(individualAnt);
+//        }
+    }
+
+
 
     public boolean getFB(){return fb;}
 
