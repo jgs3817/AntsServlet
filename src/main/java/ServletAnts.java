@@ -138,12 +138,16 @@ public class ServletAnts extends HttpServlet {
 
                 // Selecting if its next or previous frame
                 int chosenFrame;
+                int overlayFrame;
                 if(fbData.getFB()){
                     chosenFrame = fbData.getFrameID() + 1;
                 } else {chosenFrame = fbData.getFrameID() - 1;
                 }
 
-                //Query Ant Data from DB
+                overlayFrame = chosenFrame - 1;
+                System.out.println("Chosen: " + chosenFrame);
+
+                //Query Overlay Ant Data from DB
                 String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
                 try {
 
@@ -152,7 +156,7 @@ public class ServletAnts extends HttpServlet {
 
                     String mostRecentLabelledData = "SELECT ant_id, x_coord, y_coord\n" +
                             "FROM coordinates\n" +
-                            "WHERE video_id = '"+ fbData.getVideoID() +"' AND frame_id = " + (chosenFrame);
+                            "WHERE video_id = '"+ fbData.getVideoID() +"' AND frame_id = " + (overlayFrame);
 
                     ResultSet rset=s.executeQuery(mostRecentLabelledData);
 
@@ -167,7 +171,7 @@ public class ServletAnts extends HttpServlet {
                         oneAntData.add(rset.getInt("y_coord"));
                         antData.add(oneAntData);
                     }
-                    fbData.setAntData(antData);
+                    fbData.setOverlayAntData(antData);
 
                     rset.close();
                     s.close();
@@ -185,16 +189,31 @@ public class ServletAnts extends HttpServlet {
                     }
                 }
 
-                // Fetch data from resources
-                String file_name= String.format("%05d",chosenFrame);
-                String filePath ="./vid_1/" + file_name + ".png";
-                BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource(filePath));
+                // Fetch chosen frame from resources
+                if(chosenFrame > 0) {
+                    String file_name = String.format("%05d", chosenFrame);
+                    String filePath = "./vid_1/" + file_name + ".png";
+                    BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource(filePath));
 
-                // Convert Image into byte and store it in class FBData
-                ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                ImageIO.write(image, "png", bos);
-                byte [] imageByte = bos.toByteArray();
-                fbData.setImageByte(imageByte);
+                    // Convert Image into byte and store it in class FBData
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    ImageIO.write(image, "png", bos);
+                    byte[] imageByte = bos.toByteArray();
+                    fbData.setImageByte(imageByte);
+                } else {fbData.setError(true);}
+
+                // Fetch overlay frame from resources
+                if(overlayFrame > 0) {
+                    String file_name = String.format("%05d", overlayFrame);
+                    String filePath = "./vid_1/" + file_name + ".png";
+                    BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource(filePath));
+
+                    // Convert Image into byte and store it in class FBData
+                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
+                    ImageIO.write(image, "png", bos);
+                    byte[] overlayImageByte = bos.toByteArray();
+                    fbData.setOverlayImageByte(overlayImageByte);
+                }
 
                 // Send FBData object over
                 Gson respGson = new Gson();

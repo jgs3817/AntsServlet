@@ -4,18 +4,20 @@ import java.util.stream.Collectors;
 
 public class FBData implements Serializable {
 
-    private ArrayList<ArrayList<Integer>> antData;
+    private ArrayList<ArrayList<Integer>> overlayAntData;
     private String videoID;
-    private int frameID = 2;
+    private int frameID;
     private byte [] imageByte;
+    private byte [] overlayImageByte;
     private boolean fb;
+    private boolean error = false;
 
-    public ArrayList<ArrayList<Integer>> getAntData() {
-        return antData;
+    public ArrayList<ArrayList<Integer>> getOverlayAntDataAntData() {
+        return overlayAntData;
     }
 
-    public void setAntData(ArrayList<ArrayList<Integer>> antDataInput){
-        this.antData = new ArrayList<>(antDataInput.stream().map(x -> new ArrayList<>(x)).collect(Collectors.toList()));
+    public void setOverlayAntData(ArrayList<ArrayList<Integer>> antDataInput){
+        this.overlayAntData = new ArrayList<>(antDataInput.stream().map(x -> new ArrayList<>(x)).collect(Collectors.toList()));
 
 //        for (int i = 0; i < antDataInput.size(); i++) {
 //            ArrayList<Integer> individualAnt = new ArrayList<Integer>();
@@ -38,6 +40,8 @@ public class FBData implements Serializable {
 
     public byte [] getImageByte(){return this.imageByte;}
 
+    public byte [] getOverlayImageByte(){return overlayImageByte;}
+
     public void setVideoID(String videoID){
         this.videoID = videoID;
     }
@@ -47,6 +51,12 @@ public class FBData implements Serializable {
     }
 
     public void setImageByte(byte [] imageByteInput){imageByte = imageByteInput;}
+
+    public void setOverlayImageByte(byte [] overlayImageByteInput){overlayImageByte = overlayImageByteInput;}
+
+    public void setError(boolean errorInput){error = errorInput;}
+
+    public boolean getError(){return error;}
 
 
 }
