@@ -11,8 +11,8 @@ public class InitData implements Serializable {
         this.videoID = videoID;
     }
 
-    public void setProgress(int input){
-        this.progress.add(input);
+    public void setProgress(ArrayList<Integer> progressInput){
+        progress = new ArrayList(progressInput.stream().map(x -> new ArrayList<>(x)).collect(Collectors.toList()));
     }
 
     public void setImageByte(byte [] imageByteInput) {
