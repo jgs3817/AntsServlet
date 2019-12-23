@@ -13,7 +13,7 @@ cache:
 deploy:
   provider: heroku
   api_key:
-    secure: 3dece2ce-6112-432c-a556-376d15f88bff
+    secure: bfc46e68-30a1-4955-b235-5f7c512dacfd
   app: servletants
   on:
     branch: Josh
