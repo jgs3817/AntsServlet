@@ -219,8 +219,9 @@ public class ServletAnts extends HttpServlet {
 
                 LandingData landingData = new LandingData();
                 landingData.setVideoID(reqVidID);
-                //Query from DB
 
+                /*
+                //Query from DB
                 String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
                 try {
                     Connection conn= DriverManager.getConnection(dbUrl, "postgres", "winn");
@@ -264,11 +265,13 @@ public class ServletAnts extends HttpServlet {
                         except = except.getNextException();
                         count++;
                     }
-                }
+                }*/
 
                 // Fetch data from resources
+                landingData.setFrameID(1);
                 String file_name = String.format("%05d",landingData.getFrameID());
                 String filePath = "./"+ landingData.getVideoID() +"/" + file_name + ".png";
+                System.out.println(filePath);
                 BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource(filePath));
 
                 // Convert Image into byte and store it in class LandingData

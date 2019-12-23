@@ -14,7 +14,7 @@ deploy:
   provider: heroku
   api_key:
     secure: 3dece2ce-6112-432c-a556-376d15f88bff
-  app: ants-tracker
+  app: servletants
   on:
     branch: Josh
   skip_cleanup: true
