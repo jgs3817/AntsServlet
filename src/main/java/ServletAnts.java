@@ -44,7 +44,7 @@ public class ServletAnts extends HttpServlet {
 
             }
             break;
-            case "/FBpage":{
+            case "/fbpage":{
 
                 // Receive FBData Request
                 String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
@@ -229,41 +229,8 @@ public class ServletAnts extends HttpServlet {
 
             for(int i=0; i < submitData.getAntData().size(); i++) {
 
-                String submitQuery = "--video\n" +
-                        "DO $$\n" +
-                        "BEGIN\n" +
-                        "IF NOT EXISTS (\n" +
-                        "\tSELECT * FROM video WHERE video_id ='" + submitData.getVideoID() + "')\n" +
-                        "\tTHEN\n" +
-                        "\t\tINSERT INTO video (video_id) VALUES ('" + submitData.getVideoID() + "');\n" +
-                        "\tEND IF;\n" +
-                        "END $$;\n" +
-                        "\n" +
-                        "--ant\n" +
-                        "DO $$\n" +
-                        "BEGIN\n" +
-                        "IF NOT EXISTS (\n" +
-                        "\tSELECT * FROM ant WHERE ant_id =" + submitData.getAntData().get(i).get(0) + "AND video_id='" + submitData.getVideoID() + "')\n" +
-                        "\tTHEN\n" +
-                        "\t\tINSERT INTO ant (ant_id, video_id) VALUES (" + submitData.getAntData().get(i).get(0) + ",'" + submitData.getVideoID() + "');\n" +
-                        "\tEND IF;\n" +
-                        "END $$;\n" +
-                        "\n" +
-                        "\n" +
-                        "--frame\n" +
-                        "DO $$\n" +
-                        "BEGIN\n" +
-                        "IF NOT EXISTS(\n" +
-                        "\tSELECT * FROM frame WHERE video_id = '" + submitData.getVideoID() + "'AND frame_id = " + submitData.getFrameID() +")\n" +
-                        "\tTHEN\n" +
-                        "\t\tINSERT INTO frame (video_id, frame_id) values ('"+ submitData.getVideoID() +"', "+ submitData.getFrameID() +");\n" +
-                        "\tEND IF;\n" +
-                        "END $$;" +
-                        "--coordinates\n" +
-                        "INSERT INTO coordinates (ant_id, frame_id, x_coord, y_coord, video_id) values (" + submitData.getAntData().get(i).get(0) + "," + submitData.getFrameID() + ", " + submitData.getAntData().get(i).get(1) + ", " + submitData.getAntData().get(i).get(2) + ", '" + submitData.getVideoID() + "');";
-
+                String submitQuery = "INSERT INTO coordinates (ant_id, frame_id, x_coord, y_coord, video_id) values (" + submitData.getAntData().get(i).get(0) + "," + submitData.getFrameID() + ", " + submitData.getAntData().get(i).get(1) + ", " + submitData.getAntData().get(i).get(2) + ", '" + submitData.getVideoID() + "');";
                 s.execute(submitQuery);
-
 
             }
             conn.close();
@@ -329,7 +296,7 @@ public class ServletAnts extends HttpServlet {
             String mostRecentLabelledData = "SELECT ant_id, x_coord, y_coord, frame_id\n" +
                     "FROM coordinates\n" +
                     "WHERE video_id = '" + reqVidID + "' and frame_id = (SELECT frame_id \n" +
-                    "\t\t\t\t\tFROM frame \n" +
+                    "\t\t\t\t\tFROM coordinates \n" +
                     "\t\t\t\t\tWHERE video_id='"+ reqVidID +"' \n" +
                     "\t\t\t\t\tORDER BY frame_id DESC\n" +
                     "\t\t\t\t\tLIMIT 1)\n" +
