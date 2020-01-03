@@ -67,10 +67,10 @@ public class ServletAnts extends HttpServlet {
                 //System.out.println("Chosen: " + chosenFrame);
 
                 //Query Overlay Ant Data from DB
-                String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
+                String dbUrl = System.getenv("JDBC_DATABASE_URL");
                 try {
 
-                    Connection conn= DriverManager.getConnection(dbUrl, "postgres", "winn");
+                    Connection conn= DriverManager.getConnection(dbUrl);
                     Statement s=conn.createStatement();
 
                     String mostRecentLabelledData = "SELECT ant_id, x_coord, y_coord\n" +
@@ -177,7 +177,7 @@ public class ServletAnts extends HttpServlet {
                 String reqInit = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
                 System.out.println(reqInit);
 
-                String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
+                String dbUrl = System.getenv("JDBC_DATABASE_URL");
 
                 InitDataArrayList initDataArrayList = new InitDataArrayList();
 
@@ -223,8 +223,8 @@ public class ServletAnts extends HttpServlet {
      */
     private void insertIntoDB(SubmitData submitData) {
         try {
-            String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
-            Connection conn= DriverManager.getConnection(dbUrl, "postgres", "winn");
+            String dbUrl = System.getenv("JDBC_DATABASE_URL");
+            Connection conn= DriverManager.getConnection(dbUrl);
             Statement s=conn.createStatement();
 
             for(int i=0; i < submitData.getAntData().size(); i++) {
@@ -288,9 +288,9 @@ public class ServletAnts extends HttpServlet {
         landingData.setVideoID(reqVidID);
 
         //Query from DB
-        String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
+        String dbUrl = System.getenv("JDBC_DATABASE_URL");
         try {
-            Connection conn= DriverManager.getConnection(dbUrl, "postgres", "winn");
+            Connection conn= DriverManager.getConnection(dbUrl);
             Statement s=conn.createStatement();
 
             String mostRecentLabelledData = "SELECT ant_id, x_coord, y_coord, frame_id\n" +
@@ -365,9 +365,9 @@ public class ServletAnts extends HttpServlet {
     private ArrayList<ArrayList<Integer>> queryAntData(String videoID, int frameID){
         ArrayList<ArrayList<Integer>> antData = new ArrayList<ArrayList<Integer>>();
         try {
-            String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
+            String dbUrl = System.getenv("JDBC_DATABASE_URL");
 
-            Connection conn= DriverManager.getConnection(dbUrl, "postgres", "winn");
+            Connection conn= DriverManager.getConnection(dbUrl);
             Statement s=conn.createStatement();
 
             String antDataQuery = "SELECT ant_id, x_coord, y_coord\n" +
@@ -419,8 +419,8 @@ public class ServletAnts extends HttpServlet {
 
         try {
 
-            String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
-            Connection conn= DriverManager.getConnection(dbUrl, "postgres", "winn");
+            String dbUrl = System.getenv("JDBC_DATABASE_URL");
+            Connection conn= DriverManager.getConnection(dbUrl);
             Statement s=conn.createStatement();
 
             String progressQuery = "SELECT MAX(frame_id)\n" +
