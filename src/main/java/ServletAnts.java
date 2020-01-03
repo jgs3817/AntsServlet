@@ -13,7 +13,7 @@ import java.sql.*;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
 
-@WebServlet(urlPatterns={"/submitpage", "/landingpage", "/FBpage", "/init"},loadOnStartup = 1)
+@WebServlet(urlPatterns={"/submitpage", "/landingpage", "/fbpage", "/init"},loadOnStartup = 1)
 public class ServletAnts extends HttpServlet {
 
     @Override
