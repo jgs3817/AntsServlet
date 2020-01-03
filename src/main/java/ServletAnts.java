@@ -109,28 +109,12 @@ public class ServletAnts extends HttpServlet {
 
                 // Fetch chosen frame from resources
                 if(chosenFrame > 0) {
-                    String file_name = String.format("%05d", chosenFrame);
-                    String filePath = "./"+ fbData.getVideoID() +"/" + file_name + ".png";
-                    BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource(filePath));
-
-                    // Convert Image into byte and store it in class FBData
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    ImageIO.write(image, "png", bos);
-                    byte[] imageByte = bos.toByteArray();
-                    fbData.setImageByte(imageByte);
+                    fbData.setImageByte(fetchFrameImage(fbData.getVideoID(),chosenFrame));
                 } else {fbData.setError(true);}
 
                 // Fetch overlay frame from resources
                 if(overlayFrame > 0) {
-                    String file_name = String.format("%05d", overlayFrame);
-                    String filePath = "./vid_1/" + file_name + ".png";
-                    BufferedImage image = ImageIO.read(getClass().getClassLoader().getResource(filePath));
-
-                    // Convert Image into byte and store it in class FBData
-                    ByteArrayOutputStream bos = new ByteArrayOutputStream();
-                    ImageIO.write(image, "png", bos);
-                    byte[] overlayImageByte = bos.toByteArray();
-                    fbData.setOverlayImageByte(overlayImageByte);
+                    fbData.setOverlayImageByte(fetchFrameImage(fbData.getVideoID(),overlayFrame));
                 }
 
                 // Send FBData object over
