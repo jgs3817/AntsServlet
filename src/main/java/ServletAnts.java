@@ -10,6 +10,8 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.nio.file.Path;
+import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.stream.Collectors;
@@ -436,13 +438,14 @@ public class ServletAnts extends HttpServlet {
             }
         }
 
+        String filePath = Paths.get("").toAbsolutePath().toString();
 
-//        String filePath = System.getProperty("user.dir") + "\\src\\main\\resources\\" + videoID ;
-//        System.out.println(filePath);
-//        File directory= new File(filePath);
-//        int fileCount = directory.list().length;
+        //System.out.println(filePath + "\\src\\main\\resources\\" + videoID);
 
-        progress.add(10);
+        File directory = new File(filePath + "\\src\\main\\resources\\" + videoID);
+        int fileCount = directory.listFiles().length;
+
+        progress.add(fileCount);
 
         System.out.println("progress method:" + progress);
 
