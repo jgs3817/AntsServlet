@@ -152,6 +152,9 @@ public class ServletAnts extends HttpServlet {
                 //Query Overlay Ant Data from DB
                 landingData.setOverlayAntData(queryAntData(landingData.getVideoID(), landingData.getFrameID()-1));
 
+                //Query Ant Data from DB
+                landingData.setAntData(queryAntData(landingData.getVideoID(),landingData.getFrameID()));
+
                 // Send LandingData object over
                 sendLandingData(resp, landingData);
             }
