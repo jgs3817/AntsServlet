@@ -166,7 +166,7 @@ public class ServletAnts extends HttpServlet {
                     initData.setVideoID("vid_" + i);
 
                     // Query DB for progress
-                    initData.setProgress(queryProgress(initData.getVideoID());
+                    initData.setProgress(queryProgress(initData.getVideoID()));
 
                     System.out.println(initData.getProgress());
 
