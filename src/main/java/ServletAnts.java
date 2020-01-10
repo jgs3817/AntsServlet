@@ -442,9 +442,6 @@ public class ServletAnts extends HttpServlet {
         File directory= new File(filePath);
         int fileCount = directory.list().length;
 
-
-
-
         progress.add(fileCount);
 
         System.out.println("progress method:" + progress);
