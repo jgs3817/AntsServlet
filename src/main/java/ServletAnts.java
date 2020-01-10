@@ -7,6 +7,7 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayOutputStream;
+import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.sql.*;
@@ -160,19 +161,12 @@ public class ServletAnts extends HttpServlet {
 
                 InitDataArrayList initDataArrayList = new InitDataArrayList();
 
-                ArrayList<Integer> vidSize = new ArrayList<Integer>();
-                vidSize.add(0);
-                vidSize.add(12);
-                vidSize.add(5);
-                vidSize.add(3);
-                vidSize.add(6);
-
                 for(int i=1; i<5; i++){
                     InitData initData = new InitData();
                     initData.setVideoID("vid_" + i);
 
                     // Query DB for progress
-                    initData.setProgress(queryProgress(initData.getVideoID(), vidSize.get(i)));
+                    initData.setProgress(queryProgress(initData.getVideoID());
 
                     System.out.println(initData.getProgress());
 
@@ -402,7 +396,7 @@ public class ServletAnts extends HttpServlet {
     stores the the total number of frames of that videoID as the first index
     returns the arraylist
      */
-    private ArrayList<Integer> queryProgress(String videoID, int videoSize){
+    private ArrayList<Integer> queryProgress(String videoID){
 
         ArrayList<Integer> progress = new ArrayList<>();
 
@@ -426,11 +420,6 @@ public class ServletAnts extends HttpServlet {
                 progress.add(rset.getInt("max"));
             }
 
-//                        String filePath = "./" + initData.getVideoID();
-//                        File file = new File("filePath");
-//                        int progressDeno = file.listFiles().length;
-//                        initData.setProgress(progressDeno);
-
             rset.close();
             s.close();
             conn.close();
@@ -447,7 +436,16 @@ public class ServletAnts extends HttpServlet {
             }
         }
 
-        progress.add(videoSize);
+
+        String filePath = System.getProperty("user.dir") + "\\src\\main\\resources\\" + videoID ;
+        System.out.println(filePath);
+        File directory= new File(filePath);
+        int fileCount = directory.list().length;
+
+
+
+
+        progress.add(fileCount);
 
         System.out.println("progress method:" + progress);
 
