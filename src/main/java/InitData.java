@@ -12,7 +12,7 @@ public class InitData implements Serializable {
     }
 
     public void setProgress(ArrayList<Integer> progressInput){
-        progress = new ArrayList(progressInput.stream().map(x -> new ArrayList<>(x)).collect(Collectors.toList()));
+        progress = progressInput;
     }
 
     public void setImageByte(byte [] imageByteInput) {

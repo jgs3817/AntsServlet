@@ -154,13 +154,15 @@ public class ServletAnts extends HttpServlet {
                 String reqInit = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
                 System.out.println(reqInit);
 
+                //String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
+
                 String dbUrl = System.getenv("JDBC_DATABASE_URL");
 
                 InitDataArrayList initDataArrayList = new InitDataArrayList();
 
                 ArrayList<Integer> vidSize = new ArrayList<Integer>();
                 vidSize.add(0);
-                vidSize.add(9);
+                vidSize.add(12);
                 vidSize.add(5);
                 vidSize.add(3);
                 vidSize.add(6);
@@ -172,20 +174,24 @@ public class ServletAnts extends HttpServlet {
                     // Query DB for progress
                     initData.setProgress(queryProgress(initData.getVideoID(), vidSize.get(i)));
 
+                    System.out.println(initData.getProgress());
+
                     // Fetch thumbnail
                     initData.setImageByte(fetchFrameImage(initData.getVideoID(), 1));
 
-                    // Convert the initData  object into json string
-                    Gson respGson = new Gson();
-                    String jsonString = respGson.toJson(initData);
+                    // Convert the initData object into json string
+                    Gson initGson = new Gson();
+                    String jsonString = initGson.toJson(initData);
+                    //System.out.println(jsonString);
                     initDataArrayList.addInitData(jsonString);
 
                     System.out.println("test1");
                 }
+
                 // Send ArrayList of jsonString over
                 Gson respGson = new Gson();
                 String jsonArrayListString = respGson.toJson(initDataArrayList);
-                System.out.println(jsonArrayListString);
+                //System.out.println(jsonArrayListString);
                 resp.setContentType("text/html");
                 resp.getWriter().write(jsonArrayListString);
             }
@@ -250,6 +256,7 @@ public class ServletAnts extends HttpServlet {
         resp.setContentType("text/html");
         resp.getWriter().write("Data submitted!");
         Gson gson = new Gson();
+        System.out.println(gson.fromJson(reqBody, SubmitData.class));
         return gson.fromJson(reqBody, SubmitData.class);
     }
 
@@ -402,12 +409,15 @@ public class ServletAnts extends HttpServlet {
         try {
 
             String dbUrl = System.getenv("JDBC_DATABASE_URL");
+            //String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
+
+
             Connection conn= DriverManager.getConnection(dbUrl);
             Statement s=conn.createStatement();
 
             String progressQuery = "SELECT MAX(frame_id)\n" +
                     "FROM coordinates \n" +
-                    "WHERE video_id = '"+ videoID +"' ";
+                    "WHERE video_id = '" + videoID + "'";
 
             ResultSet rset = s.executeQuery(progressQuery);
 
@@ -436,7 +446,10 @@ public class ServletAnts extends HttpServlet {
                 count++;
             }
         }
+
         progress.add(videoSize);
+
+        System.out.println("progress method:" + progress);
 
         return progress;
     }
