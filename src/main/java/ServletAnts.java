@@ -135,25 +135,15 @@ public class ServletAnts extends HttpServlet {
                 String reqVidID = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
                 System.out.println(reqVidID);
 
-                LandingData landingData = queryLastLabelledFrame(reqVidID);
+                LandingData landingData = new LandingData();
 
-                System.out.println("test1");
+                landingData = queryLastLabelledFrame(reqVidID);
+
+                //System.out.println("test1");
 
                 landingData.setImageByte(fetchFrameImage(landingData.getVideoID(), landingData.getFrameID()));
 
-                // Fetch overlay image frame from resources
-                if(landingData.getFrameID() > 1) {
-                    landingData.setOverlayImageByte(fetchFrameImage(landingData.getVideoID(), landingData.getFrameID()-1));
-                }
-
-                System.out.println("OverlayFrameID");
-                System.out.println((landingData.getFrameID()-1));
-
-                //Query Overlay Ant Data from DB
-                landingData.setOverlayAntData(queryAntData(landingData.getVideoID(), landingData.getFrameID()-1));
-
-                //Query Ant Data from DB
-                landingData.setAntData(queryAntData(landingData.getVideoID(),landingData.getFrameID()));
+                //System.out.println(landingData.getAntData());
 
                 // Send LandingData object over
                 sendLandingData(resp, landingData);
@@ -318,6 +308,11 @@ public class ServletAnts extends HttpServlet {
                 count++;
             }
         }
+
+        //System.out.println(landingData.getAntData());
+        //System.out.println(landingData.getFrameID());
+
+
         return landingData;
     }
 
