@@ -12,7 +12,7 @@ public class FBData implements Serializable {
     private boolean fb;
     private boolean error = false;
 
-    public ArrayList<ArrayList<Integer>> getOverlayAntDataAntData() {
+    public ArrayList<ArrayList<Integer>> getOverlayAntData() {
         return overlayAntData;
     }
 
