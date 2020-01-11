@@ -438,12 +438,12 @@ public class ServletAnts extends HttpServlet {
             }
         }
 
-//        String filePath = Paths.get("").toAbsolutePath().toString();
-//        //System.out.println(filePath + "\\src\\main\\resources\\" + videoID);
-//        File directory = new File(filePath + "\\src\\main\\resources\\" + videoID);
-//        int fileCount = directory.listFiles().length;
+        String filePath = Paths.get("").toAbsolutePath().toString();
+        //System.out.println(filePath + "\\src\\main\\resources\\" + videoID);
+        File directory = new File(filePath + "/src/main/resources/" + videoID);
+        int fileCount = directory.listFiles().length;
 
-        progress.add(10);
+        progress.add(fileCount);
 
         System.out.println("progress method:" + progress);
 
