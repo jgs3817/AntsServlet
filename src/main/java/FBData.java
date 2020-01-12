@@ -17,17 +17,7 @@ public class FBData implements Serializable {
 
     public void setOverlayAntData(ArrayList<ArrayList<Integer>> antDataInput){
         this.overlayAntData = new ArrayList<>(antDataInput.stream().map(x -> new ArrayList<>(x)).collect(Collectors.toList()));
-
-//        for (int i = 0; i < antDataInput.size(); i++) {
-//            ArrayList<Integer> individualAnt = new ArrayList<Integer>();
-//            for (int j = 0; j < antDataInput.get(i).size(); j++) {
-//                individualAnt.add(antDataInput.get(i).get(j));
-//            }
-//            this.antData.add(individualAnt);
-//        }
     }
-
-
 
     public boolean getFB(){return fb;}
 

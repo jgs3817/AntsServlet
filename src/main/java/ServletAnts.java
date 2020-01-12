@@ -87,10 +87,6 @@ public class ServletAnts extends HttpServlet {
 
                 landingData = queryLastLabelledFrame(reqVidID);
 
-                System.out.println(landingData.getVideoID());
-                System.out.println(landingData.getFrameID());
-                System.out.println(landingData.getAntData());
-
                 landingData.setImageByte(fetchFrameImage(landingData.getVideoID(), landingData.getFrameID()));
 
                 // Send LandingData object over
@@ -183,8 +179,9 @@ public class ServletAnts extends HttpServlet {
     converts them into submitData object
     returns submitData object
     */
-    private SubmitData receiveSubmitData(HttpServletRequest req, HttpServletResponse resp) throws IOException {
+    protected SubmitData receiveSubmitData(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
+        System.out.println(reqBody);
         resp.setContentType("text/html");
         resp.getWriter().write("Data submitted!");
         Gson gson = new Gson();
@@ -286,6 +283,8 @@ public class ServletAnts extends HttpServlet {
     private ArrayList<ArrayList<Integer>> queryAntData(String videoID, int frameID){
         ArrayList<ArrayList<Integer>> antData = new ArrayList<ArrayList<Integer>>();
         try {
+
+            //String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
             String dbUrl = System.getenv("JDBC_DATABASE_URL");
 
             Connection conn= DriverManager.getConnection(dbUrl);
@@ -300,6 +299,7 @@ public class ServletAnts extends HttpServlet {
 
             while(rset.next()){
                 ArrayList<Integer> oneAntData = new ArrayList<Integer>();
+
                 oneAntData.add(rset.getInt("ant_id"));
                 oneAntData.add(rset.getInt("x_coord"));
                 oneAntData.add(rset.getInt("y_coord"));
@@ -321,7 +321,6 @@ public class ServletAnts extends HttpServlet {
                 count++;
             }
         }
-
         return antData;
     }
 
@@ -384,4 +383,5 @@ public class ServletAnts extends HttpServlet {
 
         return progress;
     }
+
 }
