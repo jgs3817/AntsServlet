@@ -10,7 +10,6 @@ public class FBData implements Serializable {
     private byte [] imageByte;
     private byte [] overlayImageByte;
     private boolean fb;
-    private boolean error = false;
 
     public ArrayList<ArrayList<Integer>> getOverlayAntData() {
         return overlayAntData;
@@ -53,10 +52,6 @@ public class FBData implements Serializable {
     public void setImageByte(byte [] imageByteInput){imageByte = imageByteInput;}
 
     public void setOverlayImageByte(byte [] overlayImageByteInput){overlayImageByte = overlayImageByteInput;}
-
-    public void setError(boolean errorInput){error = errorInput;}
-
-    public boolean getError(){return error;}
 
 
 }

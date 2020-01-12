@@ -22,7 +22,7 @@ public class ServletAnts extends HttpServlet {
     @Override
     protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException{
         resp.setContentType("text/html");
-        resp.getWriter().write("This is a servlet");
+        resp.getWriter().write("This is servletants");
     }
 
     @Override
@@ -32,31 +32,20 @@ public class ServletAnts extends HttpServlet {
 
         switch(path){
             case "/submitpage":{
-
                 // Receive SubmitData
                 SubmitData submitData = receiveSubmitData(req, resp);
 
-                System.out.println("Submit Data:");
-                System.out.println("Ant data: " + submitData.getAntData());
-                System.out.println(submitData.getVideoID());
-                System.out.println(submitData.getFrameID());
-
                 //Insert into DB
                 insertIntoDB(submitData);
-
-
             }
             break;
             case "/fbpage":{
 
                 // Receive FBData Request
                 String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-                System.out.println(reqBody);
 
                 Gson gson = new Gson();
                 FBData fbData = gson.fromJson(reqBody, FBData.class);
-                System.out.println("frameID");
-                System.out.println(fbData.getFrameID());
 
                 // Selecting if its next or previous frame
                 int chosenFrame;
@@ -65,55 +54,15 @@ public class ServletAnts extends HttpServlet {
                     chosenFrame = fbData.getFrameID() + 1;
                 } else {chosenFrame = fbData.getFrameID() - 1;
                 }
-
                 overlayFrame = chosenFrame - 1;
-                //System.out.println("Chosen: " + chosenFrame);
 
                 //Query Overlay Ant Data from DB
-                String dbUrl = System.getenv("JDBC_DATABASE_URL");
-                try {
-
-                    Connection conn= DriverManager.getConnection(dbUrl);
-                    Statement s=conn.createStatement();
-
-                    String mostRecentLabelledData = "SELECT ant_id, x_coord, y_coord\n" +
-                            "FROM coordinates\n" +
-                            "WHERE video_id = '"+ fbData.getVideoID() +"' AND frame_id = " + (overlayFrame);
-
-                    ResultSet rset=s.executeQuery(mostRecentLabelledData);
-
-                    ArrayList<ArrayList<Integer>> antData = new ArrayList<ArrayList<Integer>>();
-
-                    while(rset.next()){
-                        //System.out.println(rset.getInt("ant_id")+" "+ rset.getInt("x_coord") + " " + rset.getInt("y_coord"));
-                        ArrayList<Integer> oneAntData = new ArrayList<Integer>();
-                        oneAntData.add(rset.getInt("ant_id"));
-                        oneAntData.add(rset.getInt("x_coord"));
-                        oneAntData.add(rset.getInt("y_coord"));
-                        antData.add(oneAntData);
-                    }
-                    fbData.setOverlayAntData(antData);
-
-                    rset.close();
-                    s.close();
-                    conn.close();
-                }
-                catch (SQLException except) {
-                    int count = 1;
-                    while (except != null) {
-                        System.out.println("SQLException " + count);
-                        System.out.println("Code: " + except.getErrorCode());
-                        System.out.println("SqlState: " + except.getSQLState());
-                        System.out.println("Error Message: " + except.getMessage());
-                        except = except.getNextException();
-                        count++;
-                    }
-                }
+                fbData.setOverlayAntData(queryAntData(fbData.getVideoID(),overlayFrame));
 
                 // Fetch chosen frame from resources
                 if(chosenFrame > 0) {
                     fbData.setImageByte(fetchFrameImage(fbData.getVideoID(),chosenFrame));
-                } else {fbData.setError(true);}
+                }
 
                 // Fetch overlay frame from resources
                 if(overlayFrame > 0) {
@@ -123,7 +72,6 @@ public class ServletAnts extends HttpServlet {
                 // Send FBData object over
                 Gson respGson = new Gson();
                 String jsonString = respGson.toJson(fbData);
-                //byte[] body = jsonString.getBytes(StandardCharsets.UTF_8);
 
                 resp.setContentType("application/json");
                 resp.getWriter().write(jsonString);
@@ -132,21 +80,18 @@ public class ServletAnts extends HttpServlet {
             break;
             case "/landingpage":{
 
-                System.out.println("landing page doPost");
-
                 //Receive vid_id
                 String reqVidID = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-                System.out.println(reqVidID);
 
                 LandingData landingData = new LandingData();
 
                 landingData = queryLastLabelledFrame(reqVidID);
 
-                //System.out.println("test1");
+                System.out.println(landingData.getVideoID());
+                System.out.println(landingData.getFrameID());
+                System.out.println(landingData.getAntData());
 
                 landingData.setImageByte(fetchFrameImage(landingData.getVideoID(), landingData.getFrameID()));
-
-                //System.out.println(landingData.getAntData());
 
                 // Send LandingData object over
                 sendLandingData(resp, landingData);
@@ -155,10 +100,8 @@ public class ServletAnts extends HttpServlet {
             case "/init":{
                 //Receive Init request
                 String reqInit = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-                System.out.println(reqInit);
 
                 //String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
-
                 String dbUrl = System.getenv("JDBC_DATABASE_URL");
 
                 InitDataArrayList initDataArrayList = new InitDataArrayList();
@@ -170,24 +113,18 @@ public class ServletAnts extends HttpServlet {
                     // Query DB for progress
                     initData.setProgress(queryProgress(initData.getVideoID()));
 
-                    System.out.println(initData.getProgress());
-
                     // Fetch thumbnail
                     initData.setImageByte(fetchFrameImage(initData.getVideoID(), 1));
 
                     // Convert the initData object into json string
                     Gson initGson = new Gson();
                     String jsonString = initGson.toJson(initData);
-                    //System.out.println(jsonString);
                     initDataArrayList.addInitData(jsonString);
-
-                    System.out.println("test1");
                 }
 
                 // Send ArrayList of jsonString over
                 Gson respGson = new Gson();
                 String jsonArrayListString = respGson.toJson(initDataArrayList);
-                //System.out.println(jsonArrayListString);
                 resp.setContentType("text/html");
                 resp.getWriter().write(jsonArrayListString);
             }
@@ -248,11 +185,9 @@ public class ServletAnts extends HttpServlet {
     */
     private SubmitData receiveSubmitData(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        //System.out.println(reqBody);
         resp.setContentType("text/html");
         resp.getWriter().write("Data submitted!");
         Gson gson = new Gson();
-        System.out.println(gson.fromJson(reqBody, SubmitData.class));
         return gson.fromJson(reqBody, SubmitData.class);
     }
 
@@ -268,6 +203,7 @@ public class ServletAnts extends HttpServlet {
         landingData.setVideoID(reqVidID);
 
         //Query from DB
+        //String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
         String dbUrl = System.getenv("JDBC_DATABASE_URL");
         try {
             Connection conn= DriverManager.getConnection(dbUrl);
@@ -363,7 +299,6 @@ public class ServletAnts extends HttpServlet {
 
 
             while(rset.next()){
-                //System.out.println(rset.getInt("ant_id")+" "+ rset.getInt("x_coord") + " " + rset.getInt("y_coord"));
                 ArrayList<Integer> oneAntData = new ArrayList<Integer>();
                 oneAntData.add(rset.getInt("ant_id"));
                 oneAntData.add(rset.getInt("x_coord"));
