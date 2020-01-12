@@ -181,7 +181,6 @@ public class ServletAnts extends HttpServlet {
     */
     protected SubmitData receiveSubmitData(HttpServletRequest req, HttpServletResponse resp) throws IOException {
         String reqBody = req.getReader().lines().collect(Collectors.joining(System.lineSeparator()));
-        System.out.println(reqBody);
         resp.setContentType("text/html");
         resp.getWriter().write("Data submitted!");
         Gson gson = new Gson();
@@ -196,12 +195,14 @@ public class ServletAnts extends HttpServlet {
     returns landingData
      */
     private LandingData queryLastLabelledFrame(String reqVidID){
+
         LandingData landingData = new LandingData();
         landingData.setVideoID(reqVidID);
 
         //Query from DB
         //String dbUrl = "jdbc:postgresql://localhost:5432/postgres";
         String dbUrl = System.getenv("JDBC_DATABASE_URL");
+
         try {
             Connection conn= DriverManager.getConnection(dbUrl);
             Statement s=conn.createStatement();
@@ -227,6 +228,9 @@ public class ServletAnts extends HttpServlet {
                 antData.add(oneAntData);
             }
             landingData.setAntData(antData);
+            if(landingData.getFrameID()==0){
+                landingData.setFrameID(1);
+            }
 
             rset.close();
             s.close();
