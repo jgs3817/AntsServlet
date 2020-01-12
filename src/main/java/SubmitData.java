@@ -22,7 +22,6 @@ public class SubmitData implements Serializable {
     public void setAntData(ArrayList<ArrayList<Integer>> antDataInput) {
         antData = new ArrayList<>(antDataInput.stream().map(x -> new ArrayList<>(x)).collect(Collectors.toList()));
     }
-
 }
 
 

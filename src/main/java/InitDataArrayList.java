@@ -13,3 +13,4 @@ public class InitDataArrayList implements Serializable {
         return arrayJsonString;
     }
 }
+

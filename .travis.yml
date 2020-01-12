@@ -1,4 +1,5 @@
-anguage: java
+
+language: java
 before_install:
   - chmod +x gradlew
 script:
@@ -13,6 +14,5 @@ cache:
 deploy:
   provider: heroku
   api_key: f5fa2fc6-7cd3-4469-804d-a7333cb8271c
-  on: Winn
   app: servletants
   skip_cleanup: true

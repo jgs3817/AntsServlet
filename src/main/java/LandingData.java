@@ -8,7 +8,6 @@ public class LandingData {
     private int frameID;
     private byte[] imageByte;
 
-
     public ArrayList<ArrayList<Integer>> getAntData() {
         return antData;
     }

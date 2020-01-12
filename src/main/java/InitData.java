@@ -4,17 +4,17 @@ import java.util.ArrayList;
 public class InitData implements Serializable {
     private String videoID;
     private ArrayList<Integer> progress = new ArrayList<Integer>();
-    private byte [] imageByte;
+    private byte[] imageByte;
 
     public void setVideoID(String videoID) {
         this.videoID = videoID;
     }
 
-    public void setProgress(ArrayList<Integer> progressInput){
+    public void setProgress(ArrayList<Integer> progressInput) {
         progress = progressInput;
     }
 
-    public void setImageByte(byte [] imageByteInput) {
+    public void setImageByte(byte[] imageByteInput) {
         this.imageByte = imageByteInput;
     }
 
@@ -29,5 +29,4 @@ public class InitData implements Serializable {
     public ArrayList<Integer> getProgress() {
         return progress;
     }
-
 }
