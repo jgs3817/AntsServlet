@@ -219,7 +219,6 @@ public class ServletAnts extends HttpServlet {
 
             ArrayList<ArrayList<Integer>> antData = new ArrayList<ArrayList<Integer>>();
             while(rset.next()){
-                //System.out.println(rset.getInt("ant_id")+" "+ rset.getInt("x_coord") + " " + rset.getInt("y_coord"));
                 ArrayList<Integer> oneAntData = new ArrayList<Integer>();
                 oneAntData.add(rset.getInt("ant_id"));
                 oneAntData.add(rset.getInt("x_coord"));
