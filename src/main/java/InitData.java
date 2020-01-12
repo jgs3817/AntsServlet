@@ -1,6 +1,5 @@
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.stream.Collectors;
 
 public class InitData implements Serializable {
     private String videoID;
@@ -29,16 +28,6 @@ public class InitData implements Serializable {
 
     public ArrayList<Integer> getProgress() {
         return progress;
-    }
-
-    public void printInitData(){
-        System.out.println("VideoID");
-        System.out.println(this.videoID);
-        System.out.println("Progress");
-        System.out.println(this.progress.get(0));
-        System.out.println(this.progress.get(1));
-        System.out.println("Image Byte");
-        System.out.println(this.imageByte);
     }
 
 }

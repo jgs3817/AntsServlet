@@ -10,7 +10,6 @@ import java.io.ByteArrayOutputStream;
 import java.io.File;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
-import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.sql.*;
 import java.util.ArrayList;
@@ -248,9 +247,6 @@ public class ServletAnts extends HttpServlet {
             }
         }
 
-        //System.out.println(landingData.getAntData());
-        //System.out.println(landingData.getFrameID());
-
 
         return landingData;
     }
@@ -355,7 +351,6 @@ public class ServletAnts extends HttpServlet {
             ResultSet rset = s.executeQuery(progressQuery);
 
             while(rset.next()){
-                //System.out.println(rset.getInt("ant_id")+" "+ rset.getInt("x_coord") + " " + rset.getInt("y_coord"));
                 progress.add(rset.getInt("max"));
             }
 
@@ -376,14 +371,10 @@ public class ServletAnts extends HttpServlet {
         }
 
         String filePath = Paths.get("").toAbsolutePath().toString();
-        //System.out.println(filePath + "\\src\\main\\resources\\" + videoID);
         File directory = new File(filePath + "/src/main/resources/" + videoID);
         int fileCount = directory.listFiles().length;
 
         progress.add(fileCount);
-
-        System.out.println("progress method:" + progress);
-
         return progress;
     }
 
