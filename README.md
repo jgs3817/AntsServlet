@@ -18,7 +18,7 @@ postLanding method is called, sending the videoID of the selected video to the s
 Receives the request and queries the last labelled frame and the ant data corresponding to that frame from the database. The servlet also retrieves the last labelled image frame from the resources. In addition, it also queries overlay ant data and overlay frame image. This is stored in an object of class LandingData, which is sent back to the client as a JSon string
 
 URL Pattern : /fbpage
-(forwards/backwardspage)
+(forwards/backwards page)
 When the user clicks ‘Next’ or ‘Previous’ buttons, the app has to display the next or previous frame, their corresponding overlay frame and their ants positions
 postFB method is called, sending an object of class FBData containing the current videoID and frameID and a boolean variable indicating whether the ‘Next’ or ‘Previous’ button was pressed
 Receives the request, queries the ant data of the correct frame and retrieves the correct frame image. The same is done for the overlay frame as well. This is stored in the same object received from the client and sent back as a JSon string
